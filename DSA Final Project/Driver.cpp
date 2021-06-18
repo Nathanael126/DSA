@@ -5,6 +5,7 @@
 #include <iterator>
 #include <map>
 #include <string>
+#include <chrono>
 using namespace std;
 
 double hashFunction(string a){
@@ -29,7 +30,8 @@ void hashSearch(map<double, string> x, string a){
 	map<double, string>::iterator itr = x.find(search);
 	if(itr->first >= 1){
 		cout << "Found results: " << endl;
-		cout << itr->first << " " << itr->second << endl;
+		cout << "ID \t Title" << endl; 
+		cout << itr->first << "\t" << itr->second << endl;
 	}
 	else{
 		cout<< "Not found!" << endl;
@@ -57,7 +59,8 @@ void linearStringSearch(map<double, string> x, string a){
 	for (itr = x.begin(); itr != x.end(); ++itr) {
         if(itr->second == a){
         	cout << "Found results: " << endl;
-			cout << itr->first << " " << itr->second << endl;
+        	cout << "ID \t Title" << endl; 
+			cout << itr->first << "\t" << itr->second << endl;
 			return;
 		}
     }
@@ -69,7 +72,8 @@ void linearIndexSearch(map<double, string> x, double a){
 	for (itr = x.begin(); itr != x.end(); ++itr) {
         if(itr->first == a){
         	cout << "Found results: " << endl;
-			cout << itr->first << " " << itr->second << endl;
+        	cout << "ID \t Title" << endl; 
+			cout << itr->first << "\t" << itr->second << endl;
 			return;
 		}
     }
@@ -82,7 +86,8 @@ void binarySearch(map<double, string> x, double a, double left, double right){
 		if (middle == a){
 			map<double, string>::iterator itr = x.find(middle);
 			cout << "Found results: " << endl;
-			cout << itr->first << " " << itr->second << endl;
+			cout << "ID \t Title" << endl; 
+			cout << itr->first << "\t" << itr->second << endl;
 			return;
 		}
 		
@@ -97,7 +102,60 @@ void binarySearch(map<double, string> x, double a, double left, double right){
 	return;
 }
 
-void read(){
+void menu(map<double, string> hashTable, map<double, string> IDTable){
+	int x = 0;
+	int j = 0;
+	string i;
+	while(true){
+		cout << endl;
+		cout << "Enter your selection\n1)Print entire map\n2)Hash search using title\n3)Linear search using title\n4)Linear search using ID\n5)Binary search using ID\n6)Exit\nEnter selection: ";
+		cin >> x;
+		cout << endl;
+		switch(x){
+			case 1:
+				cout << "Which map?\n1)HashMap\n2)IDMap\nEnter selection: ";
+				cin >> j;
+				if(j == 1){
+					printMap(hashTable);
+				}
+				else if(j == 2){
+					printMap(IDTable);
+				}
+				else{
+					cout << "Wrong selection!" << endl;
+				}
+				break;
+			case 2:
+				cout << "Insert title: ";
+				cin >> i;
+				hashSearch(hashTable,i);
+				break;
+			case 3:
+				cout << "Insert title: ";
+				cin >> i;
+				linearStringSearch(IDTable,i);
+				break;
+			case 4:
+				cout << "Insert index: ";
+				cin >> j;
+				linearIndexSearch(IDTable,j);
+				break;
+			case 5:
+				cout << "Insert index: ";
+				cin >> j;
+				binarySearch(IDTable,j,0,12295);
+				break;
+			case 6:
+				cout << "Exiting program" << endl;
+				return;
+			default:
+				cout << "Wrong selection!" << endl;
+	}
+	}
+}
+
+string * read(){
+	static string a[12295];
 	ifstream in("anime.csv");
 
     	string line, field;
@@ -116,28 +174,19 @@ void read(){
         animeData.push_back(data);  // add the 1D array to the 2D array
     }
 
-    // print out what was read in
 
     for (size_t i=0; i<animeData.size(); ++i){
-        cout << animeData[i][1] << "|"; // (separate fields by |) (and names only)
-        cout << "\n";
+        a[i] = animeData[i][1];
     }
+    return a;
 }
 
 int main(){
-	int n = 5;
-	string a[n] = {"Boku no Hero Academia","Naruto","Shingeki no Kyojin","YuGiOh!","One Piece"};
+	string *a = read();
+	int n = 12295;
 	map<double, string> hashTable = hashMap(a,n);
 	map<double, string> IDTable = createIDTable(a,n);
-	
-	printMap(hashTable);
-	printMap(IDTable);
-	
-	hashSearch(hashMap, "Naruto");
-	linearIndexSearch(IDTable, 1);
-	linearStringSearch(IDTable, "Naruto");
-    binarySearch(IDTable, 1, 0, n);
-    
+	menu(hashTable, IDTable);
     
 	return 0;
 }
