@@ -98,23 +98,30 @@ void binarySearch(map<double, string> x, double a, double left, double right){
 }
 
 void read(){
-	fstream df;
-	df.open("anime.csv", ios::in);
-	vector<string> row;
-	string line, word, temp;
-	
-	while (df>>temp){
-		row.clear();
-		getline(df, line);
-		stringstream s(line);
-		cout << line << endl;
-		
-//		while(getline(s, word, ',')){
-//			row.push_back(word);
-//		};
-//		cout << row[0] << endl;
-	};
-	df.close();
+	ifstream in("anime.csv");
+
+    	string line, field;
+
+   	vector< vector<string> > animeData;  // the 2D array
+    	vector<string> data;                // array of values for one line only
+
+    	while ( getline(in,line) ){    // get next line in file
+        	data.clear();
+        	stringstream ss(line);
+
+        	while (getline(ss,field,',')){  // break line into comma delimitted field {
+            	data.push_back(field);  // add each field to the 1D array
+        }
+
+        animeData.push_back(data);  // add the 1D array to the 2D array
+    }
+
+    // print out what was read in
+
+    for (size_t i=0; i<animeData.size(); ++i){
+        cout << animeData[i][1] << "|"; // (separate fields by |) (and names only)
+        cout << "\n";
+    }
 }
 
 int main(){
