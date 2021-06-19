@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 using namespace std;
+using namespace std::chrono;
 
 double hashFunction(string a){
 	double x = 0;
@@ -77,81 +78,27 @@ void linearIndexSearch(map<double, string> x, double a){
 			return;
 		}
     }
-    cout << "Not found!";
+    cout << "Not found!" << endl;
 }
 
-void binarySearch(map<double, string> x, double a, double left, double right){
-	if(right >= left){
-		double middle = left + (right - 1) / 2;
-		if (middle == a){
-			map<double, string>::iterator itr = x.find(middle);
-			cout << "Found results: " << endl;
+int binarySearch(map<double, string> x, double a, double left, double right){
+	if (right >= left) {
+        int mid = left + (right - left) / 2;
+        if (mid == a){
+        	map<double, string>::iterator itr = x.find(mid);
+        	cout << "Found results: " << endl;
 			cout << "ID \t Title" << endl; 
 			cout << itr->first << "\t" << itr->second << endl;
-			return;
+			return 0;
 		}
-		
-		
-		if(a < middle){
-			binarySearch(x, a, left, middle-1);
+        if (mid > a){
+			return binarySearch(x, a, left, mid - 1);
 		}
-		binarySearch(x, a, middle+1, right);
-		
-	}
-	cout << "Not found!" << endl;
-	return;
-}
-
-void menu(map<double, string> hashTable, map<double, string> IDTable){
-	int x = 0;
-	int j = 0;
-	string i;
-	while(true){
-		cout << endl;
-		cout << "Enter your selection\n1)Print entire map\n2)Hash search using title\n3)Linear search using title\n4)Linear search using ID\n5)Binary search using ID\n6)Exit\nEnter selection: ";
-		cin >> x;
-		cout << endl;
-		switch(x){
-			case 1:
-				cout << "Which map?\n1)HashMap\n2)IDMap\nEnter selection: ";
-				cin >> j;
-				if(j == 1){
-					printMap(hashTable);
-				}
-				else if(j == 2){
-					printMap(IDTable);
-				}
-				else{
-					cout << "Wrong selection!" << endl;
-				}
-				break;
-			case 2:
-				cout << "Insert title: ";
-				cin >> i;
-				hashSearch(hashTable,i);
-				break;
-			case 3:
-				cout << "Insert title: ";
-				cin >> i;
-				linearStringSearch(IDTable,i);
-				break;
-			case 4:
-				cout << "Insert index: ";
-				cin >> j;
-				linearIndexSearch(IDTable,j);
-				break;
-			case 5:
-				cout << "Insert index: ";
-				cin >> j;
-				binarySearch(IDTable,j,0,12295);
-				break;
-			case 6:
-				cout << "Exiting program" << endl;
-				return;
-			default:
-				cout << "Wrong selection!" << endl;
-	}
-	}
+  
+        return binarySearch(x, a, mid + 1, right);
+    }
+    
+	return -1;
 }
 
 string * read(){
@@ -186,7 +133,78 @@ int main(){
 	int n = 12295;
 	map<double, string> hashTable = hashMap(a,n);
 	map<double, string> IDTable = createIDTable(a,n);
-	menu(hashTable, IDTable);
-    
+	
+	auto start = high_resolution_clock::now();
+	auto end = high_resolution_clock::now();
+	auto timeElapsed = duration_cast<microseconds>(end - start);
+	int x = 0;
+	int j = 0;
+	int f;
+	string i;
+	while(true){
+		cout << endl;
+		cout << "Enter your selection\n1)Print entire map\n2)Hash search using title\n3)Linear search using title\n4)Linear search using ID\n5)Binary search using ID\n6)Exit\nEnter selection: ";
+		cin >> x;
+		cout << endl;
+		switch(x){
+			case 1:
+				cout << "Which map?\n1)HashMap\n2)IDMap\nEnter selection: ";
+				cin >> j;
+				if(j == 1){
+					printMap(hashTable);
+				}
+				else if(j == 2){
+					printMap(IDTable);
+				}
+				else{
+					cout << "Wrong selection!" << endl;
+				}
+				break;
+			case 2:
+				cout << "Insert title: ";
+				cin >> i;
+				start = high_resolution_clock::now();
+				hashSearch(hashTable,i);
+				end = high_resolution_clock::now();
+				timeElapsed = duration_cast<microseconds>(end - start);
+				cout << "Time taken: " << timeElapsed.count() << " microseconds" << endl;
+				break;
+			case 3:
+				cout << "Insert title: ";
+				cin >> i;
+				start = high_resolution_clock::now();
+				linearStringSearch(IDTable,i);
+				end = high_resolution_clock::now();
+				timeElapsed = duration_cast<microseconds>(end - start);
+				cout << "Time taken: " << timeElapsed.count() << " microseconds" << endl;
+				break;
+			case 4:
+				cout << "Insert index: ";
+				cin >> j;
+				start = high_resolution_clock::now();
+				linearIndexSearch(IDTable,j);
+				end = high_resolution_clock::now();
+				timeElapsed = duration_cast<microseconds>(end - start);
+				cout << "Time taken: " << timeElapsed.count() << " microseconds" << endl;
+				break;
+			case 5:
+				cout << "Insert index: ";
+				cin >> j;
+				start = high_resolution_clock::now();
+				f = binarySearch(IDTable,j,0,12294);
+				if(f == -1){
+					cout << "Not found!" << endl;
+				}
+				end = high_resolution_clock::now();
+				timeElapsed = duration_cast<microseconds>(end - start);
+				cout << "Time taken: " << timeElapsed.count() << " microseconds" << endl;
+				break;
+			case 6:
+				cout << "Exiting program" << endl;
+				return 0;
+			default:
+				cout << "Wrong selection!" << endl;
+	}
+	}
 	return 0;
 }
