@@ -9,27 +9,47 @@
 using namespace std;
 using namespace std::chrono;
 
+//Hash function (string to int)
 double hashFunction(string a){
 	double x = 0;
-	int i = 1;
+	int i = 2;
+//	Character ASCII multiplied by index starting at 2
+//Index:	2 3 4 5 6 7
+//EG: 		N a r u t o
+//ASCII:	78 97 114 117 116 111
+//New ASCII:156 291 456 585 696 777
+//Total:	2961
 	for(char c : a){
 		x = x + (static_cast<int>(c)*i++);
+		
 	}
 	return x;
 }
-
+//Initialize hashmap
 map<double, string> hashMap(string *a, int n){
 	map<double, string> hashTable;
+	int temp = 0;
+	map<double, string>::iterator itr;
 	for(int i; i < n; i++){
-		hashTable.insert(pair<double,string>(hashFunction(a[i]),a[i]));
+		temp = hashFunction(a[i]);
+		itr = hashTable.find(temp);
+		while(itr->first >= 1){
+			temp = temp + 1;
+			itr = hashTable.find(temp);
+		}
+		hashTable.insert(pair<double,string>(temp,a[i]));
 	}
 	return hashTable;
 }
-
+//Search in hashtable
 void hashSearch(map<double, string> x, string a){
 	double search = hashFunction(a);
 	map<double, string>::iterator itr = x.find(search);
 	if(itr->first >= 1){
+		while(itr->second != a){
+			search = search + 1;
+			map<double, string>::iterator itr = x.find(search);
+		}
 		cout << "Found results: " << endl;
 		cout << "ID \t Title" << endl; 
 		cout << itr->first << "\t" << itr->second << endl;
@@ -38,7 +58,7 @@ void hashSearch(map<double, string> x, string a){
 		cout<< "Not found!" << endl;
 	}	
 }
-
+//Map print
 void printMap(map<double, string> x){
 	cout << "Printing full map:" << endl;
 	map<double, string>::iterator itr;
@@ -47,14 +67,16 @@ void printMap(map<double, string> x){
     }
 }
 
+//Initialize ID table
 map<double, string> createIDTable(string *a, int n){
 	map<double, string> IDTable;
-	for(int i; i < n; i++){
+	for(int i = 0; i < n; i++){
 		IDTable.insert(pair<double,string>(i,a[i]));
 	}
 	return IDTable;
 }
 
+//Search linearly using string
 void linearStringSearch(map<double, string> x, string a){
 	map<double, string>::iterator itr;
 	for (itr = x.begin(); itr != x.end(); ++itr) {
@@ -67,7 +89,7 @@ void linearStringSearch(map<double, string> x, string a){
     }
     cout << "Not found!";
 }
-
+//Search linearly using index
 void linearIndexSearch(map<double, string> x, double a){
 		map<double, string>::iterator itr;
 	for (itr = x.begin(); itr != x.end(); ++itr) {
@@ -80,7 +102,7 @@ void linearIndexSearch(map<double, string> x, double a){
     }
     cout << "Not found!" << endl;
 }
-
+//Search using binary search
 int binarySearch(map<double, string> x, double a, double left, double right){
 	if (right >= left) {
         int mid = left + (right - left) / 2;
@@ -100,7 +122,7 @@ int binarySearch(map<double, string> x, double a, double left, double right){
     
 	return -1;
 }
-
+//Initialize .csv
 string * read(){
 	static string a[12295];
 	ifstream in("anime.csv");
