@@ -30,9 +30,11 @@ map<double, string> hashMap(string *a, int n){
 	map<double, string> hashTable;
 	int temp = 0;
 	map<double, string>::iterator itr;
+//	Hash all entries
 	for(int i; i < n; i++){
 		temp = hashFunction(a[i]);
 		itr = hashTable.find(temp);
+//		Collision handler
 		while(itr->first >= 1){
 			temp = temp + 1;
 			itr = hashTable.find(temp);
@@ -46,6 +48,7 @@ void hashSearch(map<double, string> x, string a){
 	double search = hashFunction(a);
 	map<double, string>::iterator itr = x.find(search);
 	if(itr->first >= 1){
+//		Collision handler
 		while(itr->second != a){
 			search = search + 1;
 			map<double, string>::iterator itr = x.find(search);
@@ -103,6 +106,7 @@ void linearIndexSearch(map<double, string> x, double a){
     cout << "Not found!" << endl;
 }
 //Search using binary search
+//Recursive funtion method
 int binarySearch(map<double, string> x, double a, double left, double right){
 	if (right >= left) {
         int mid = left + (right - left) / 2;
@@ -155,7 +159,7 @@ int main(){
 	int n = 12295;
 	map<double, string> hashTable = hashMap(a,n);
 	map<double, string> IDTable = createIDTable(a,n);
-	
+//	Initialize variables
 	auto start = high_resolution_clock::now();
 	auto end = high_resolution_clock::now();
 	auto timeElapsed = duration_cast<microseconds>(end - start);
@@ -163,6 +167,7 @@ int main(){
 	int j = 0;
 	int f;
 	string i;
+//	Menu UI
 	while(true){
 		cout << endl;
 		cout << "Enter your selection\n1)Print entire map\n2)Hash search using title\n3)Linear search using title\n4)Linear search using ID\n5)Binary search using ID\n6)Exit\nEnter selection: ";
